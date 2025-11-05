@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('description');
             $table->string('price');
+            $table->date('start_date');
             $table->date('end_date');
+            $table->enum('status', ['Stopped', 'In Progress', 'Completed']);
             $table->timestamps();
         });
     }

@@ -10,6 +10,8 @@ class Customer extends Model
         'name',
         'description',
         'price',
+        'start_date',
         'end_date',
+        'status',
     ];
 }

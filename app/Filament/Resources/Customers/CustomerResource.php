@@ -18,7 +18,8 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-
+use Filament\Forms\Components\ToggleButtons;
+use Filament\Forms\Components\Textarea;
 class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
@@ -34,15 +35,33 @@ class CustomerResource extends Resource
                 TextInput::make('name')
                     ->label('Nombre')
                     ->required(),
-                TextInput::make('description')
+                TextArea::make('description')
                     ->label('Descripción')
                     ->required(),
                 TextInput::make('price')
                     ->label('Precio')
                     ->required(),
-                DatePicker::make('end_date')
-                    ->label('Fecha de finalización')
+                DatePicker::make('start_date')
+                    ->label('Fecha de inicio')
                     ->required(),
+                DatePicker::make('end_date')
+                    ->label('Fecha de entrega')
+                    ->required(),
+                ToggleButtons::make('status')
+                    ->label('Estado')
+                    //horizontal display
+                    ->inline()
+                    //poner color a cada opcion
+                    ->options([
+                        'Stopped' => 'Sin Iniciar',
+                        'In Progress' => 'En Progreso',
+                        'Completed' => 'Completado'
+                    ])
+                    ->colors([
+                        'Stopped' => 'danger',
+                        'In Progress' => 'info',
+                        'Completed' => 'success',
+                    ])
             ]);
     }
 
@@ -53,9 +72,13 @@ class CustomerResource extends Resource
                 TextEntry::make('name')->label('Nombre'),
                 TextEntry::make('description')->label('Descripción'),
                 TextEntry::make('price')->label('Precio'),
+                TextEntry::make('start_date')
+                    ->date()
+                    ->label('Fecha de inicio'),
                 TextEntry::make('end_date')
                     ->date()
                     ->label('Fecha de finalización'),
+                TextEntry::make('status')->label('Estado'),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),
@@ -80,10 +103,30 @@ class CustomerResource extends Resource
                 TextColumn::make('price')
                     ->searchable()
                     ->label('Precio'),
+                TextColumn::make('start_date')
+                    ->date()
+                    ->label('Fecha de inicio')
+                    ->sortable(),
                 TextColumn::make('end_date')
                     ->date()
                     ->label('Fecha de finalización')
                     ->sortable(),
+                //poner color segun el estado
+                TextColumn::make('status')
+                    ->label('Estado')
+                    ->sortable()
+                    ->badge()
+                    // ->formatStateUsing(fn(string $state): string => match ($state) {
+                    //     'Stopped' => 'Detenido',
+                    //     'In Progress' => 'En Progreso',
+                    //     'Completed' => 'Completado',
+                    //     default => $state, 
+                    // })
+                    ->color(fn(string $state): string => match ($state) {
+                        'Stopped' => 'danger',
+                        'In Progress' => 'info',
+                        'Completed' => 'success',
+                    }),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
